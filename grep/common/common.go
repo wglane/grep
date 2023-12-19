@@ -47,12 +47,35 @@ func (r Result) Format(opts *Options) string {
 
 type Results []Result
 
-// TODO: implement Sort interface
+func (r Results) Len() int {
+	return len(r)
+}
+
+func (r Results) Less(i, j int) bool {
+	if r[i].File == r[j].File {
+		return r[i].LineNum < r[j].LineNum
+	}
+
+	return r[i].File < r[j].File
+}
+
+func (r Results) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
+}
 
 func (r Results) Print(opts *Options) {
 	for _, res := range r {
 		fmt.Println(res.Format(opts))
 	}
+}
+
+func (r Results) ToSlice(opts *Options) []string {
+	var out []string
+	for _, res := range r {
+		out = append(out, res.Format(opts))
+	}
+
+	return out
 }
 
 type Matcher interface {

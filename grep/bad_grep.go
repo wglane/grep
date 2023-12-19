@@ -9,18 +9,24 @@ import (
 	"strings"
 )
 
-func BadGrep(files []string, pattern string, opts *common.Options) {
-	for _, file := range files {
-		matchBad(file, pattern, opts)
+func (g *Grepper) BadGrep() {
+	var allMatches []string
+	for _, file := range g.Files {
+		allMatches = append(allMatches, matchBad(file, g.Pattern, g.Opts)...)
 	}
+
+	g.Results = allMatches
 }
 
-func matchBad(filename, pattern string, opts *common.Options) {
+func matchBad(filename, pattern string, opts *common.Options) []string {
 	fd, err := os.Open(filename)
 	if err != nil {
 		fmt.Printf("could not open %s\n", filename)
 		os.Exit(1)
 	}
+	defer fd.Close()
+
+	var matches []string
 
 	lineNum := 1
 	scanner := bufio.NewScanner(fd)
@@ -46,8 +52,8 @@ func matchBad(filename, pattern string, opts *common.Options) {
 		if isMatch {
 			// entire line
 			if opts.NameOnly {
-				fmt.Println(filename)
-				return
+				matches = append(matches, filename)
+				return matches
 			}
 			// prepend number
 			if opts.Num {
@@ -57,9 +63,11 @@ func matchBad(filename, pattern string, opts *common.Options) {
 			if opts.Name {
 				line = filename + ":" + line
 			}
-			fmt.Println(line)
+			matches = append(matches, line)
 		}
 
 		lineNum += 1
 	}
+
+	return matches
 }

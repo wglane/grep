@@ -9,13 +9,13 @@ import (
 	"sync"
 )
 
-func GreatGrep(files []string, pattern string, opts *common.Options) {
+func (g *Grepper) GreatGrep() {
 	ch := make(chan common.Result)
 	var wg sync.WaitGroup
 
-	for _, file := range files {
+	for _, file := range g.Files {
 		wg.Add(1)
-		go matchGreat(file, pattern, opts, &wg, ch)
+		go matchGreat(file, g.Pattern, g.Opts, &wg, ch)
 	}
 
 	go func() {
@@ -29,15 +29,16 @@ func GreatGrep(files []string, pattern string, opts *common.Options) {
 	}
 
 	sort.Sort(res)
-	res.Print(opts)
+	g.Results = res.ToSlice(g.Opts)
 }
 
-func matchGreat(filename string, pattern string, opts *common.Options, wg *sync.WaitGroup, ch chan common.Result) {
+func matchGreat(filename string, pattern string, opts *common.Options, wg *sync.WaitGroup, ch chan<- common.Result) {
 	fd, err := os.Open(filename)
 	if err != nil {
 		fmt.Printf("could not open %s\n", filename)
 		os.Exit(1)
 	}
+	defer fd.Close()
 
 	matcher := common.NewMatcher(opts)
 	lineNum := 1
@@ -45,15 +46,13 @@ func matchGreat(filename string, pattern string, opts *common.Options, wg *sync.
 	scanner := bufio.NewScanner(fd)
 	for scanner.Scan() {
 		line := scanner.Text()
-
 		if matcher.Match(line, pattern) {
 			ch <- common.Result{File: filename, LineNum: lineNum, Text: line}
-
 			if opts.NameOnly {
 				return
 			}
 		}
-
 		lineNum += 1
 	}
+	wg.Done()
 }

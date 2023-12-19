@@ -23,7 +23,15 @@ func main() {
 		opts.Name = true
 	}
 
-	grep.Grep(files, pattern, opts)
+	g := grep.NewGrepper(files, pattern, opts)
+	if err := g.Grep(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	for _, r := range g.Results {
+		fmt.Println(r)
+	}
 }
 
 func makeOptions() *common.Options {
@@ -32,7 +40,7 @@ func makeOptions() *common.Options {
 	ins := flag.Bool("i", false, "match using case-insensitive operation")
 	inv := flag.Bool("v", false, "invert the program by collecting lines that fail to match")
 	ent := flag.Bool("x", false, "only search for lines where string matches entire line")
-	grep := flag.String("g", "minimal", "specifies which version of grep to use ('min', 'result', 'opts', 'in')")
+	grep := flag.String("g", "", "specifies which version of grep to use ('min', 'result', 'opts', 'in')")
 
 	flag.Parse()
 
