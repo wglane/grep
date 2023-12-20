@@ -32,7 +32,7 @@ func equal(got, want []string) bool {
 
 func TestMinimalGrep(t *testing.T) {
 	opts := &common.Options{Grep: "min"}
-	g := grep.NewGrepper([]string{"texts/iliad.txt", "texts/frankenstein.txt"}, "son of Peleus", opts)
+	g := grep.NewGrepper([]string{"../texts/iliad.txt", "../texts/frankenstein.txt"}, "son of Peleus", opts)
 	g.Grep()
 
 	want := sonOfPeleus
