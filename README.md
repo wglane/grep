@@ -11,7 +11,17 @@ This repository contains a lightweight demonstration of Grep in Go, showcasing f
 - **Great:** The most advanced implementation, using concurrency.
 
 ## Usage
-To run any of these implementations, use the Go command-line tool with appropriate flags. The available options for each implementation can be viewed using the flag library.
+To run any of these implementations, use the Go command-line tool with appropriate flags. The available options are:
+
+```bash
+  -g string
+        specifies which version of grep to use ('min', 'result', 'opts', 'in')
+  -i    match using case-insensitive operation
+  -l    only output names of files with at least one matching line
+  -n    prepends line number to output
+  -v    invert the program by collecting lines that fail to match
+  -x    only search for lines where string matches entire line
+```
 
 ### Example
 An example of running the program with the `great` implementation is shown below:
