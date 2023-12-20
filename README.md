@@ -20,7 +20,7 @@ An example of running the program with the `great` implementation is shown below
 go run grep.go -n -i -g great "heavens" texts/frankenstein.txt texts/iliad.txt
 ```
 
-```bash
+```
 texts/frankenstein.txt:981:with frightful loudness from various quarters of the heavens. I remained,
 texts/frankenstein.txt:1216:heavens; they have discovered how the blood circulates, and the nature of
 texts/frankenstein.txt:1364:more certainly shine in the heavens than that which I now affirm is
