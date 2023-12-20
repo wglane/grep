@@ -48,7 +48,9 @@ func matchGreat(filename string, pattern string, opts *common.Options, wg *sync.
 		line := scanner.Text()
 		if matcher.Match(line, pattern) {
 			ch <- common.Result{File: filename, LineNum: lineNum, Text: line}
+
 			if opts.NameOnly {
+				wg.Done()
 				return
 			}
 		}

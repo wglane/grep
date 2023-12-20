@@ -25,21 +25,18 @@ func matchGood(filename, pattern string, opts *common.Options) common.Results {
 	defer fd.Close()
 
 	var res common.Results
-
 	matcher := common.NewMatcher(opts)
 	lineNum := 1
-
 	scanner := bufio.NewScanner(fd)
+
 	for scanner.Scan() {
 		line := scanner.Text()
-
 		if matcher.Match(line, pattern) {
 			res = append(res, common.Result{File: filename, LineNum: lineNum, Text: line})
 			if opts.NameOnly {
 				return res
 			}
 		}
-
 		lineNum += 1
 	}
 
